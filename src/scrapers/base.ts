@@ -833,6 +833,60 @@ export function upsertEquipmentUsage(
   );
 }
 
+export function upsertMercenaryContract(
+  db: Database.Database,
+  contract: Record<string, unknown>,
+) {
+  const now = new Date().toISOString();
+  const stmt = db.prepare(`
+    INSERT INTO mercenary_contracts (id, battle_id, country, for_country, for_country_side, budget, current_payout, current_per_k, initial_per_k, minimum_damage, professionals_only, round_number, status, current_winner, current_winner_user, bids, created_at, updated_at, expires_at, fetched_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(id) DO UPDATE SET
+      battle_id = excluded.battle_id,
+      country = excluded.country,
+      for_country = excluded.for_country,
+      for_country_side = excluded.for_country_side,
+      budget = excluded.budget,
+      current_payout = excluded.current_payout,
+      current_per_k = excluded.current_per_k,
+      initial_per_k = excluded.initial_per_k,
+      minimum_damage = excluded.minimum_damage,
+      professionals_only = excluded.professionals_only,
+      round_number = excluded.round_number,
+      status = excluded.status,
+      current_winner = excluded.current_winner,
+      current_winner_user = excluded.current_winner_user,
+      bids = excluded.bids,
+      created_at = excluded.created_at,
+      updated_at = excluded.updated_at,
+      expires_at = excluded.expires_at,
+      fetched_at = excluded.fetched_at
+  `);
+  const bids = contract.bids as Array<unknown> | undefined;
+  stmt.run(
+    contract._id as string,
+    contract.battle as string,
+    contract.country as string ?? null,
+    contract.forCountry as string ?? null,
+    contract.forCountrySide as string ?? null,
+    (contract.budget as number) ?? 0,
+    (contract.currentPayout as number) ?? 0,
+    (contract.currentPerK as number) ?? 0,
+    (contract.initialPerK as number) ?? 0,
+    (contract.minimumDamage as number) ?? 0,
+    contract.professionalsOnly ? 1 : 0,
+    (contract.roundNumber as number) ?? 0,
+    contract.status as string ?? null,
+    contract.currentWinner as string ?? null,
+    contract.currentWinnerUser as string ?? null,
+    bids ? JSON.stringify(bids) : null,
+    contract.createdAt as string ?? null,
+    contract.updatedAt as string ?? null,
+    contract.expiresAt as string ?? null,
+    now,
+  );
+}
+
 export function log(name: string, msg: string) {
   console.log(`[${name}] ${msg}`);
 }

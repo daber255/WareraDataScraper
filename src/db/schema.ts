@@ -414,6 +414,30 @@ const USER_HISTORY_INDEX = `
 CREATE INDEX IF NOT EXISTS idx_user_history_id_fetched ON user_history(id, fetched_at);
 `;
 
+const MERCENARY_CONTRACTS_TABLE = `
+CREATE TABLE IF NOT EXISTS mercenary_contracts (
+  id TEXT PRIMARY KEY,
+  battle_id TEXT NOT NULL,
+  country TEXT,
+  for_country TEXT,
+  for_country_side TEXT,
+  budget REAL DEFAULT 0,
+  current_payout REAL DEFAULT 0,
+  current_per_k REAL DEFAULT 0,
+  initial_per_k REAL DEFAULT 0,
+  minimum_damage REAL DEFAULT 0,
+  professionals_only INTEGER DEFAULT 0,
+  round_number INTEGER DEFAULT 0,
+  status TEXT,
+  current_winner TEXT,
+  current_winner_user TEXT,
+  bids TEXT,
+  created_at TEXT,
+  updated_at TEXT,
+  expires_at TEXT,
+  fetched_at TEXT NOT NULL
+);`;
+
 const EQUIPMENT_USAGE_TABLE = `
 CREATE TABLE IF NOT EXISTS equipment_usage (
   id TEXT PRIMARY KEY,
@@ -495,6 +519,7 @@ export const CREATE_TABLES = [
   MILITARY_UNITS_TABLE,
   ALLIANCES_TABLE,
   EQUIPMENT_USAGE_TABLE,
+  MERCENARY_CONTRACTS_TABLE,
   WAR_TABLE,
   USER_HISTORY_TABLE,
   USER_HISTORY_INDEX,

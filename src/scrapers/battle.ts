@@ -1,7 +1,7 @@
 import type { APIClient } from '@wareraprojects/api';
 import type Database from 'better-sqlite3';
 import type { ScraperDefinition } from './base.js';
-import { storeSnapshot, startScrapeRun, completeScrapeRun, upsertBattle, log, elapsed } from './base.js';
+import { storeSnapshot, startScrapeRun, completeScrapeRun, upsertBattle, upsertMercenaryContract, log, elapsed } from './base.js';
 
 async function scrapeActiveBattles(client: APIClient, db: Database.Database): Promise<number> {
   let count = 0;
@@ -38,6 +38,8 @@ async function scrapeActiveBattles(client: APIClient, db: Database.Database): Pr
       } catch {
         // live data may not be available for all battles
       }
+
+      count += await scrapeBattleContracts(client, db, id);
     }
   }
 
@@ -61,6 +63,8 @@ async function scrapeActiveBattles(client: APIClient, db: Database.Database): Pr
       db.prepare('UPDATE battles SET is_active = 0, last_updated = ? WHERE id = ?')
         .run(new Date().toISOString(), id);
     }
+
+    count += await scrapeBattleContracts(client, db, id);
   }
 
   if (finishedIds.length > 0) {
@@ -126,6 +130,31 @@ async function scrapeBattleRankings(client: APIClient, db: Database.Database): P
   }
 
   log('battle', `rankings done – ${count} snapshots (${elapsed(t0)})`);
+  return count;
+}
+
+async function scrapeBattleContracts(client: APIClient, db: Database.Database, battleId: string): Promise<number> {
+  let count = 0;
+
+  try {
+    const result: any = await client.mercenaryContractAuction.getPaginatedAuctions({
+      battleId,
+      status: 'won',
+      limit: 100,
+      autoPaginate: true,
+    });
+
+    for await (const page of result) {
+      for (const contract of page.items) {
+        storeSnapshot(db, 'mercenaryContractAuction.getPaginatedAuctions', contract._id as string, contract);
+        upsertMercenaryContract(db, contract);
+        count++;
+      }
+    }
+  } catch {
+    // contract data may not be available for all battles
+  }
+
   return count;
 }
 

@@ -16,6 +16,7 @@
     "report:divisions": "tsx scripts/division-report.ts",
     "report:adav": "tsx scripts/adav-members.ts",
     "report:dashboard": "tsx scripts/generate-dashboard.ts",
+    "report:beer": "tsx scripts/beer-battle-report.ts",
     "export:pages": "tsx scripts/export-pages-data.ts",
     "mcp": "tsx src/mcp-server.ts"
   },
