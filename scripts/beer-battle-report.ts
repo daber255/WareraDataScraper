@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import Database from 'better-sqlite3';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -48,20 +49,22 @@ function main() {
   }
 
   const memberCountriesRaw = alliance.member_countries as string | undefined;
-  let memberCountries: string[];
+  let rawList: { country: string }[];
   try {
-    memberCountries = memberCountriesRaw ? JSON.parse(memberCountriesRaw) : [];
+    rawList = memberCountriesRaw ? JSON.parse(memberCountriesRaw) : [];
   } catch {
-    memberCountries = [];
+    rawList = [];
   }
+  const memberCountries = rawList.map(r => r.country).filter(Boolean);
 
   if (memberCountries.length === 0) {
     console.error(`No member countries found for ${ALLIANCE_NAME}.`);
     process.exit(1);
   }
 
+  const placeholders = memberCountries.map(() => '?').join(',');
   const countryNames = db.prepare(
-    'SELECT id, name FROM countries WHERE id IN (' + memberCountries.map(() => '?').join(',') + ')',
+    `SELECT id, name FROM countries WHERE id IN (${placeholders})`,
   ).all(...memberCountries) as { id: string; name: string }[];
 
   const countryNameMap = new Map(countryNames.map(c => [c.id, c.name]));
@@ -72,8 +75,8 @@ function main() {
   const battles = db.prepare(`
     SELECT * FROM battles
     WHERE created_at >= ?
-      AND (attacker_country IN (${memberCountries.map(() => '?').join(',')})
-        OR defender_country IN (${memberCountries.map(() => '?').join(',')}))
+      AND (attacker_country IN (${placeholders})
+        OR defender_country IN (${placeholders}))
     ORDER BY created_at DESC
   `).all(cutoff, ...memberCountries, ...memberCountries) as BattleRow[];
 
@@ -169,7 +172,7 @@ function main() {
   wl(`  ${ALLIANCE_NAME} – Gesamtsumme (${totalBattles} Schlachten, ${totalRounds} Runden)`);
   wl(`═${'═'.repeat(54)}`);
   wl();
-  wl(`  ${'':>20} ${'Verträge'.padStart(10)} ${'Bounties'.padStart(10)} ${'Gesamt'.padStart(10)}`);
+  wl(`  ${''.padEnd(20)} ${'Verträge'.padStart(10)} ${'Bounties'.padStart(10)} ${'Gesamt'.padStart(10)}`);
   wl(`  ${'─'.repeat(50)}`);
   wl(`  ${'Attacker'.padEnd(20)} ${totalAttContracts.toFixed(2).padStart(10)} ${totalAttBounties.toFixed(2).padStart(10)} ${(totalAttContracts + totalAttBounties).toFixed(2).padStart(10)}`);
   wl(`  ${'Defender'.padEnd(20)} ${totalDefContracts.toFixed(2).padStart(10)} ${totalDefBounties.toFixed(2).padStart(10)} ${(totalDefContracts + totalDefBounties).toFixed(2).padStart(10)}`);
