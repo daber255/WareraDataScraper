@@ -17,9 +17,34 @@
   United Kingdom vs Belgium
   Runden: 2  (0:1)
 
+  Belgium – Verträge:
+    De Heeren XVII     152.40 btc  (0.10/1k, Runde 0)
+    Belgium Armed Forces   455.85 btc  (0.15/1k, Runde 0)
+    Husaria            296.40 btc  (0.15/1k, Runde 0)
+    10th Para SF       154.20 btc  (0.15/1k, Runde 0)
+    Het Noordzee-verbond   297.75 btc  (0.15/1k, Runde 0)
+    De Heeren XVII     221.10 btc  (0.15/1k, Runde 0)
+    10th Para SF       299.40 btc  (0.15/1k, Runde 0)
+    Korps Commando's   378.90 btc  (0.15/1k, Runde 0) [nur Profis]
+    Cubanos            137.62 btc  (0.14/1k, Runde 0)
+    Justice            698.32 btc  (0.14/1k, Runde 0) [nur Profis]
+    Belgian Marine     150.00 btc  (0.15/1k, Runde 0)
+    Husaria            202.86 btc  (0.14/1k, Runde 0)
+    Royal Air Force    298.80 btc  (0.15/1k, Runde 0)
+    Regiment van Oranje    65.52 btc  (0.13/1k, Runde 0)
+    Husaria             65.52 btc  (0.13/1k, Runde 0)
+    Anubis Strike Force   420.98 btc  (0.14/1k, Runde 0)
+    Gynybos stabas     268.84 btc  (0.13/1k, Runde 0)
+    TitanPampeano      448.05 btc  (0.15/1k, Runde 0)
+    The Islamic Caliphat   298.80 btc  (0.15/1k, Runde 0)
+    Gynybos stabas     459.00 btc  (0.15/1k, Runde 0)
+    Knights Hospitaller   294.15 btc  (0.15/1k, Runde 0)
+    Chasseurs Ardennais   264.81 btc  (0.13/1k, Runde 0)
+    Helden van Bier    294.00 btc  (0.15/1k, Runde 0)
+    Polish Armed Forces   150.00 btc  (0.15/1k, Runde 0)
 
   United Kingdom:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  Belgium:   311.18 btc gesamt  (Verträge: 0.00 / Bounties: 311.18)
+  Belgium:  6773.27 btc gesamt  (Verträge: 6773.27 / Bounties: 0.00)
 
 ───────────────────────────────────────────────────────
   ⚔️ 6a34ebe4f827  | 2026-06-19T07:12
@@ -74,6 +99,6 @@
                          Verträge   Bounties     Gesamt
   ──────────────────────────────────────────────────
   Attacker                   0.00       0.00       0.00
-  Defender                   0.00     311.18     311.18
+  Defender                6773.27       0.00    6773.27
   ──────────────────────────────────────────────────
-  Gesamt                     0.00     311.18     311.18
+  Gesamt                  6773.27       0.00    6773.27

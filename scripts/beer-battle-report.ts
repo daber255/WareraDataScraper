@@ -150,12 +150,21 @@ function main() {
     wl();
 
     if (contracts.length > 0 || oppContracts.length > 0) {
+      const allMuIds = [...new Set([...contracts, ...oppContracts].map(c => c.current_winner).filter(Boolean))];
+      const muPlaceholders = allMuIds.map(() => '?').join(',');
+      const muNames: Record<string, string> = {};
+      if (allMuIds.length > 0) {
+        const rows = db.prepare(`SELECT id, name FROM military_units WHERE id IN (${muPlaceholders})`).all(...allMuIds) as { id: string; name: string }[];
+        for (const r of rows) muNames[r.id] = r.name;
+      }
+
       const printContract = (list: ContractRow[], label: string) => {
         if (list.length === 0) return;
         wl(`  ${label} – Verträge:`);
         for (const c of list) {
           const prof = c.professionals_only ? ' [nur Profis]' : '';
-          wl(`    ${(c.current_winner ?? '?').slice(0, 16).padEnd(16)} ${c.current_payout.toFixed(2).padStart(8)} btc  (${c.current_per_k.toFixed(2)}/1k, Runde ${c.round_number})${prof}`);
+          const muLabel = muNames[c.current_winner ?? ''] ?? (c.current_winner ?? '?').slice(0, 16);
+          wl(`    ${muLabel.padEnd(16)} ${c.current_payout.toFixed(2).padStart(8)} btc  (${c.current_per_k.toFixed(2)}/1k, Runde ${c.round_number})${prof}`);
         }
       };
       printContract(contracts, `${beerLabel}`);
