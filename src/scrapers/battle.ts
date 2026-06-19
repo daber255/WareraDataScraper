@@ -140,7 +140,7 @@ async function scrapeBattleContracts(client: APIClient, db: Database.Database, b
     const result: any = await client.mercenaryContractAuction.getPaginatedAuctions({
       battleId,
       status: 'won',
-      limit: 100,
+      limit: 50,
       autoPaginate: true,
     });
 
@@ -151,8 +151,8 @@ async function scrapeBattleContracts(client: APIClient, db: Database.Database, b
         count++;
       }
     }
-  } catch {
-    // contract data may not be available for all battles
+  } catch (err) {
+    log('battle', `contracts skipped for ${battleId}: ${err instanceof Error ? err.message : err}`);
   }
 
   return count;
