@@ -12,156 +12,137 @@ const db = new Database(dbPath);
 db.pragma('journal_mode = WAL');
 
 function fmtDamage(n: number): string {
+  if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + 'B';
   if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
   if (n >= 1_000) return (n / 1_000).toFixed(1) + 'k';
   return String(Math.round(n));
 }
 
-interface AllianceMember {
-  country: string;
-}
-
-interface AllianceRow {
-  name: string;
-  member_countries: string;
-}
-
-interface BattleRoundRow {
-  battle_id: string;
-  attacker_country: string;
-  defender_country: string;
-  day: string;
-  number: number;
-  attacker_damages: number;
-  defender_damages: number;
-}
-
 function main() {
-  const today = new Date().toISOString().slice(0, 10);
-  const yesterdayDate = new Date(Date.now() - 86400000);
-  const yesterday = yesterdayDate.toISOString().slice(0, 10);
-
-  const alliances = db.prepare('SELECT name, member_countries FROM alliances').all() as AllianceRow[];
+  const alliances = db.prepare('SELECT name, member_countries FROM alliances').all() as {
+    name: string;
+    member_countries: string;
+  }[];
 
   const allianceMembers = new Map<string, Set<string>>();
   for (const a of alliances) {
     try {
-      const list = JSON.parse(a.member_countries) as AllianceMember[];
+      const list = JSON.parse(a.member_countries) as { country: string }[];
       allianceMembers.set(a.name, new Set(list.map(m => m.country)));
     } catch {
-      allianceMembers.set(a.name, new Set());
+      // skip malformed
     }
   }
 
-  const allMemberIds = new Set<string>();
-  for (const members of allianceMembers.values()) {
-    for (const id of members) allMemberIds.add(id);
+  const countryToAlliance = new Map<string, string>();
+  for (const [name, members] of allianceMembers) {
+    for (const id of members) {
+      if (!countryToAlliance.has(id)) {
+        countryToAlliance.set(id, name);
+      }
+    }
   }
 
-  const rounds = db.prepare(`
-    SELECT b.id as battle_id, b.attacker_country, b.defender_country,
-           DATE(b.created_at) as day,
-           br.number, br.attacker_damages, br.defender_damages
-    FROM battles b
-    JOIN battle_rounds br ON br.battle_id = b.id
-    WHERE DATE(b.created_at) >= ?
-    ORDER BY b.created_at
-  `).all(yesterday) as BattleRoundRow[];
+  const rows = db.prepare('SELECT country, weekly_damages FROM users WHERE weekly_damages > 0').all() as {
+    country: string;
+    weekly_damages: number;
+  }[];
 
-  const countryNameMap = new Map<string, string>();
-  if (allMemberIds.size > 0) {
-    const ids = [...allMemberIds];
-    const ph = ids.map(() => '?').join(',');
-    const rows = db.prepare(`SELECT id, name FROM countries WHERE id IN (${ph})`).all(...ids) as { id: string; name: string }[];
-    for (const r of rows) countryNameMap.set(r.id, r.name);
+  const countryIds = [...new Set(rows.map(r => r.country))];
+  const countryNames = new Map<string, string>();
+  if (countryIds.length > 0) {
+    const ph = countryIds.map(() => '?').join(',');
+    const names = db.prepare(`SELECT id, name FROM countries WHERE id IN (${ph})`).all(...countryIds) as {
+      id: string;
+      name: string;
+    }[];
+    for (const n of names) countryNames.set(n.id, n.name);
   }
 
-  type DayData = { total: number; byCountry: Map<string, number> };
-  const allianceData = new Map<string, { today: DayData; yesterday: DayData }>();
+  const damagePerCountry = new Map<string, number>();
+  for (const r of rows) {
+    damagePerCountry.set(r.country, (damagePerCountry.get(r.country) ?? 0) + r.weekly_damages);
+  }
 
-  for (const a of allianceMembers.keys()) {
-    allianceData.set(a, {
-      today: { total: 0, byCountry: new Map() },
-      yesterday: { total: 0, byCountry: new Map() },
+  const userDamage: { country_id: string; country_name: string; total_damage: number }[] = [];
+  for (const [id, total_damage] of damagePerCountry) {
+    userDamage.push({
+      country_id: id,
+      country_name: countryNames.get(id) ?? id.slice(0, 12),
+      total_damage,
     });
   }
+  userDamage.sort((a, b) => b.total_damage - a.total_damage);
 
-  for (const r of rounds) {
-    const isToday = r.day === today;
-    const isYesterday = r.day === yesterday;
-    if (!isToday && !isYesterday) continue;
-
-    for (const [aName, members] of allianceMembers) {
-      const hitAttacker = members.has(r.attacker_country);
-      const hitDefender = members.has(r.defender_country);
-
-      if (!hitAttacker && !hitDefender) continue;
-
-      const dayData = isToday
-        ? allianceData.get(aName)!.today
-        : allianceData.get(aName)!.yesterday;
-
-      if (hitAttacker) {
-        const dmg = r.attacker_damages ?? 0;
-        dayData.total += dmg;
-        const c = r.attacker_country;
-        dayData.byCountry.set(c, (dayData.byCountry.get(c) ?? 0) + dmg);
-      }
-      if (hitDefender) {
-        const dmg = r.defender_damages ?? 0;
-        dayData.total += dmg;
-        const c = r.defender_country;
-        dayData.byCountry.set(c, (dayData.byCountry.get(c) ?? 0) + dmg);
-      }
-    }
-  }
-
-  const sorted = [...allianceData.entries()]
-    .filter(([, d]) => d.today.total > 0)
-    .sort((a, b) => b[1].today.total - a[1].today.total);
-
-  console.log(`${'═'.repeat(60)}`);
-  console.log(`  Täglicher Allianz-Schadensreport`);
-  console.log(`  ${today}`);
-  console.log(`${'═'.repeat(60)}`);
-
-  if (sorted.length === 0) {
-    console.log(`\n  Keine Allianz-Battles in den letzten 24h.\n`);
+  if (userDamage.length === 0) {
+    console.log('Keine User-Schadensdaten gefunden.');
     return;
   }
 
-  for (const [name, data] of sorted) {
-    const members = allianceMembers.get(name)!;
-    const todayTotal = data.today.total;
-    const yesterdayTotal = data.yesterday.total;
-    const memberCount = [...members].filter(id => data.today.byCountry.has(id)).length;
+  const allianceData = new Map<string, { total: number; countries: { name: string; damage: number }[] }>();
+  const nonAlliance: { name: string; damage: number }[] = [];
 
-    let pctStr: string;
-    if (yesterdayTotal > 0) {
-      const pct = ((todayTotal - yesterdayTotal) / yesterdayTotal) * 100;
-      const sign = pct >= 0 ? '+' : '';
-      pctStr = `${sign}${pct.toFixed(1)}%`;
+  for (const row of userDamage) {
+    const alliance = countryToAlliance.get(row.country_id);
+    const entry = { name: row.country_name, damage: row.total_damage };
+
+    if (alliance) {
+      if (!allianceData.has(alliance)) {
+        allianceData.set(alliance, { total: 0, countries: [] });
+      }
+      const data = allianceData.get(alliance)!;
+      data.total += row.total_damage;
+      data.countries.push(entry);
     } else {
-      pctStr = '—';
-    }
-
-    console.log();
-    console.log(`  ${name} (${memberCount}/${members.size} aktiv)`);
-    console.log(`  ${'─'.repeat(56)}`);
-    console.log(`    Gesamt: ${fmtDamage(todayTotal).padStart(10)}  (${pctStr})`);
-
-    const sortedCountries = [...data.today.byCountry.entries()]
-      .sort((a, b) => b[1] - a[1]);
-
-    for (const [cId, dmg] of sortedCountries) {
-      const cName = countryNameMap.get(cId) ?? cId.slice(0, 12);
-      console.log(`    ${cName.padEnd(24)} ${fmtDamage(dmg).padStart(10)}`);
+      nonAlliance.push(entry);
     }
   }
 
+  const sortedAlliances = [...allianceData.entries()]
+    .sort((a, b) => b[1].total - a[1].total);
+
+  nonAlliance.sort((a, b) => b.damage - a.damage);
+
+  const today = new Date().toISOString().slice(0, 10);
+
+  console.log(`${'═'.repeat(60)}`);
+  console.log(`  Täglicher User-Schadensreport (weekly_damages)`);
+  console.log(`  ${today}`);
+  console.log(`${'═'.repeat(60)}`);
+
+  for (const [name, data] of sortedAlliances) {
+    const members = allianceMembers.get(name)!;
+    const activeCount = data.countries.length;
+
+    console.log();
+    console.log(`  ${name} (${activeCount}/${members.size} aktiv)`);
+    console.log(`  ${'─'.repeat(56)}`);
+    console.log(`    Gesamt: ${fmtDamage(data.total).padStart(10)}`);
+
+    for (const c of data.countries) {
+      console.log(`    ${c.name.padEnd(24)} ${fmtDamage(c.damage).padStart(10)}`);
+    }
+  }
+
+  if (nonAlliance.length > 0) {
+    console.log();
+    console.log(`  Ohne Allianz (${nonAlliance.length} Länder)`);
+    console.log(`  ${'─'.repeat(56)}`);
+    const total = nonAlliance.reduce((s, c) => s + c.damage, 0);
+    console.log(`    Gesamt: ${fmtDamage(total).padStart(10)}`);
+
+    for (const c of nonAlliance.slice(0, 10)) {
+      console.log(`    ${c.name.padEnd(24)} ${fmtDamage(c.damage).padStart(10)}`);
+    }
+    if (nonAlliance.length > 10) {
+      console.log(`    ... und ${nonAlliance.length - 10} weitere`);
+    }
+  }
+
+  const totalUserDamage = userDamage.reduce((s, r) => s + r.total_damage, 0);
   console.log();
   console.log(`${'═'.repeat(60)}`);
-  console.log(`  ${sorted.length} Allianzen mit Battles`);
+  console.log(`  ${sortedAlliances.length + (nonAlliance.length > 0 ? 1 : 0)} Blöcke • ${fmtDamage(totalUserDamage)} gesamt`);
   console.log();
 }
 
