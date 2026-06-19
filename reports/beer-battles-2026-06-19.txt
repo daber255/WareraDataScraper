@@ -7,6 +7,8 @@
   ⚔️ 6a3564e7b2fc  | 2026-06-19T15:48
   Azerbaijan vs Iran
   Runden: 1  (0:0)
+  Schaden:   67.1k – 81.0k  (Σ Runden)
+    R1:   67.1k – 81.0k
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
@@ -16,6 +18,10 @@
   ⚔️ 6a34ec22ee32  | 2026-06-19T07:13
   United Kingdom vs Belgium
   Runden: 2  (0:1)
+  Schaden:  148.0M – 151.2M  (Σ Runden)
+    R1:  103.9M – 107.3M
+    R2:   44.1M – 43.9M
+  BTC/1k:    0.10 – 0.08
 
   Belgium – Verträge:
     De Heeren XVII     152.40 btc  (0.10/1k, Runde 0)
@@ -50,6 +56,9 @@
   ⚔️ 6a34ebe4f827  | 2026-06-19T07:12
   Iraq vs Iran
   Runden: 2  (1:0)
+  Schaden:   97.2k – 2.3M  (Σ Runden)
+    R1:   24.8k – 1.1M
+    R2:   72.5k – 1.2M
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
@@ -59,6 +68,9 @@
   ⚔️ 6a34dca5f6c0  | 2026-06-19T06:07
   Iran vs Turkiye
   Runden: 2  (1:0)
+  Schaden:    2.2M – 897.2k  (Σ Runden)
+    R1:    1.4M – 390.1k
+    R2:  817.9k – 507.1k
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
@@ -68,6 +80,10 @@
   ❌ 6a34c1d89a67  | 2026-06-19T04:13
   Belgium vs Portugal
   Runden: 2  (2:0)
+  Schaden:   13.5M – 33.6M  (Σ Runden)
+    R1:    9.9M – 22.9M
+    R2:    3.6M – 10.7M
+  BTC/1k:    0.00 – 0.10
 
 
   Portugal:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
@@ -77,6 +93,9 @@
   ❌ 6a34b55cd852  | 2026-06-19T03:19
   Azerbaijan vs Iran
   Runden: 2  (2:0)
+  Schaden:  195.4k – 1.4M  (Σ Runden)
+    R1:   90.3k – 718.9k
+    R2:  105.0k – 665.9k
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
@@ -86,6 +105,10 @@
   ✅ 6a34b0ba335e  | 2026-06-19T03:00
   Ireland vs Belgium
   Runden: 2  (2:0)
+  Schaden:  211.8M – 209.2M  (Σ Runden)
+    R1:   22.2M – 21.3M
+    R2:  189.6M – 187.8M
+  BTC/1k:    0.10 – 0.13
 
 
   Ireland:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)

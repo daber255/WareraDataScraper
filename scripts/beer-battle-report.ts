@@ -28,6 +28,16 @@ interface BattleRow {
   defender_won_rounds: number;
   attacker_money_pool: number;
   defender_money_pool: number;
+  attacker_damages: number;
+  defender_damages: number;
+  attacker_money_per_1k_damages: number;
+  defender_money_per_1k_damages: number;
+}
+
+function fmtDamage(n: number): string {
+  if (n >= 1_000_000) return (n / 1_000_000).toFixed(1) + 'M';
+  if (n >= 1_000) return (n / 1_000).toFixed(1) + 'k';
+  return String(Math.round(n));
 }
 
 interface ContractRow {
@@ -147,6 +157,34 @@ function main() {
     wl(`  ${statusIcon} ${b.id.slice(0, 12)}  | ${b.created_at.slice(0, 16)}`);
     wl(`  ${attName} vs ${defName}`);
     wl(`  Runden: ${roundCount}  (${b.attacker_won_rounds ?? '?'}:${b.defender_won_rounds ?? '?'})`);
+
+    const rounds = db.prepare(`
+      SELECT number, attacker_damages, defender_damages FROM battle_rounds WHERE battle_id = ? ORDER BY number
+    `).all(b.id) as { number: number; attacker_damages: number; defender_damages: number }[];
+
+    let totalAttDmg = 0;
+    let totalDefDmg = 0;
+    for (const r of rounds) {
+      totalAttDmg += r.attacker_damages ?? 0;
+      totalDefDmg += r.defender_damages ?? 0;
+    }
+
+    if (rounds.length > 0) {
+      const beerTotal = isBeerAttacker ? totalAttDmg : totalDefDmg;
+      const oppTotal = isBeerAttacker ? totalDefDmg : totalAttDmg;
+      wl(`  Schaden: ${fmtDamage(beerTotal).padStart(7)} – ${fmtDamage(oppTotal)}  (Σ Runden)`);
+      for (const r of rounds) {
+        const ra = isBeerAttacker ? (r.attacker_damages ?? 0) : (r.defender_damages ?? 0);
+        const rd = isBeerAttacker ? (r.defender_damages ?? 0) : (r.attacker_damages ?? 0);
+        wl(`    R${r.number}: ${fmtDamage(ra).padStart(7)} – ${fmtDamage(rd)}`);
+      }
+      const beerPerK = isBeerAttacker ? (b.attacker_money_per_1k_damages ?? 0) : (b.defender_money_per_1k_damages ?? 0);
+      const oppPerK = isBeerAttacker ? (b.defender_money_per_1k_damages ?? 0) : (b.attacker_money_per_1k_damages ?? 0);
+      if (beerPerK > 0 || oppPerK > 0) {
+        wl(`  BTC/1k: ${beerPerK.toFixed(2).padStart(7)} – ${oppPerK.toFixed(2)}`);
+      }
+    }
+
     wl();
 
     if (contracts.length > 0 || oppContracts.length > 0) {
