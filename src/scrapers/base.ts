@@ -4,6 +4,7 @@ import type { APIClient } from '@wareraprojects/api';
 export interface ScraperDefinition {
   name: string;
   intervalMs: number;
+  scheduleHours?: number[];
   execute: (client: APIClient, db: Database.Database) => Promise<void>;
 }
 

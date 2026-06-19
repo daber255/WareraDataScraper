@@ -8,6 +8,7 @@ const BATCH = 50;
 export const userScraper: ScraperDefinition = {
   name: 'user',
   intervalMs: 12 * 60 * 60 * 1000,
+  scheduleHours: [1, 7, 13, 19],
 
   async execute(client: APIClient, db: Database.Database) {
     const runId = startScrapeRun(db, 'user');
