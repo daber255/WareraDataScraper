@@ -1,0 +1,218 @@
+══ Division: Division3 (7 MUs, 157 User) ══
+  Schaden  │  Ausrüstung (gesamt / Ø)  │  Waffen (gesamt / Ø)
+
+  Σ MU Marktmanipulation           1.377.625  │   26583.251 BTC   1265.869 BTC  │    9330.027 BTC    444.287 BTC
+  Σ MU DeutscheMarine              1.737.447  │   27272.918 BTC   1239.678 BTC  │   12104.162 BTC    550.189 BTC
+  Σ MU CannabisKommando              252.266  │   34444.517 BTC   1377.781 BTC  │   12925.601 BTC    517.024 BTC
+  Σ MU Nachrichtendienst             763.849  │   22457.856 BTC   1020.812 BTC  │    7576.393 BTC    344.382 BTC
+  Σ MU Panzergrenadier               772.362  │   24892.652 BTC   1082.289 BTC  │   10421.132 BTC    453.093 BTC
+  Σ MU Steuerfahndung                777.623  │    8099.489 BTC    337.479 BTC  │    2605.345 BTC    108.556 BTC
+  Σ MU Mallorca                      376.062  │    9892.088 BTC    581.888 BTC  │    3731.914 BTC    219.524 BTC
+  ══════════════════════════════════════════════════════════════════════════════════════════════════════════════════
+  Σ DIV Division3                   6.057.234  │  153642.771 BTC    997.680 BTC  │   58694.574 BTC    381.134 BTC
+
+══ Mitglieder: Marktmanipulation (22, davon 1 unbekannt) ══
+
+  Rang  Username                 Weekly Dmg          Equip        Weapons
+  ───── ────────────────────── ──────────── ────────────── ──────────────
+  1    LIFECRUSHER                747.663  1549.062 BTC   517.607 BTC
+  2    DeWulfen                   310.008     0.000 BTC     0.000 BTC
+  3    Plown93                     72.387   860.857 BTC   395.426 BTC
+  4    Snoopy1984                  44.538  1110.682 BTC   402.195 BTC
+  5    protein                     36.920  1224.243 BTC   166.168 BTC
+  6    Trinkhallenbetreiber        25.783   817.144 BTC   366.354 BTC
+  7    Schuh_Ralfmacher            15.199   948.022 BTC   364.390 BTC
+  8    Bolek                       13.765  1480.179 BTC   702.911 BTC
+  9    tteee                       10.419   178.668 BTC    64.767 BTC
+  10   Mese                        10.296  3609.620 BTC   773.333 BTC
+  11   Blutwurst                   10.095  2538.644 BTC   728.661 BTC
+  12   Kodia                        9.666   439.865 BTC    84.874 BTC
+  13   loggi                        9.645  1183.991 BTC   794.978 BTC
+  14   Nordseeinsulaner             9.181  2140.440 BTC   720.853 BTC
+  15   Spiciu                       8.899  1460.751 BTC   403.362 BTC
+  16   Freinsi                      8.423  1019.840 BTC   153.330 BTC
+  17   RainShower                   8.052   836.961 BTC   560.108 BTC
+  18   NettHier                     7.770  1243.318 BTC   635.064 BTC
+  19   meigel                       7.739   981.066 BTC   732.712 BTC
+  20   Barbarossa                   7.632   833.283 BTC   357.388 BTC
+  21   HighPerformer                3.545  2126.615 BTC   405.546 BTC
+
+  Unbekannte User (1):
+  Rang  User-ID                     
+  ───── ────────────────────────────
+  1     69c146d0ee478416237ee9a5    
+
+══ Mitglieder: DeutscheMarine (22, davon 0 unbekannt) ══
+
+  Rang  Username                 Weekly Dmg          Equip        Weapons
+  ───── ────────────────────── ──────────── ────────────── ──────────────
+  1    Zaron_der_Gottlose         895.526   581.730 BTC   104.931 BTC
+  2    Zoff                       400.603  1256.045 BTC   550.837 BTC
+  3    Niklas                     166.794   996.149 BTC  1088.177 BTC
+  4    belm                        57.295  1208.271 BTC   514.591 BTC
+  5    korbif                      28.813   118.589 BTC   153.509 BTC
+  6    ThorsFeder                  23.865   622.140 BTC   382.265 BTC
+  7    Akkulader                   19.442  1309.919 BTC   878.083 BTC
+  8    Darkshadow                  16.318  1210.079 BTC   452.618 BTC
+  9    Cold                        12.900  3475.311 BTC  1585.084 BTC
+  10   EndercreeperHD              12.252   678.865 BTC   508.666 BTC
+  11   Rabe_von_Pappenheim         12.164   298.029 BTC    81.261 BTC
+  12   Despo                       11.619   226.076 BTC    20.240 BTC
+  13   pi                          11.415  2967.452 BTC  1343.745 BTC
+  14   Idx0                        11.374  1359.290 BTC   622.790 BTC
+  15   KiriPan                     10.857  2126.175 BTC   699.732 BTC
+  16   derErste67                   9.877   230.786 BTC   284.193 BTC
+  17   Awd                          8.339  1661.759 BTC   323.802 BTC
+  18   Amani                        7.434  1672.967 BTC   529.640 BTC
+  19   GrauMelius                   7.270  1806.984 BTC   620.768 BTC
+  20   Nuramon                      5.144   715.227 BTC   252.560 BTC
+  21   Freudi                       4.968  1771.659 BTC   770.789 BTC
+  22   Bandicoot                    3.178   979.416 BTC   335.881 BTC
+
+══ Mitglieder: CannabisKommando (25, davon 0 unbekannt) ══
+
+  Rang  Username                 Weekly Dmg          Equip        Weapons
+  ───── ────────────────────── ──────────── ────────────── ──────────────
+  1    Armadillomeister            23.074    91.871 BTC    29.271 BTC
+  2    Schmusep1mmel               21.277  1346.885 BTC   242.327 BTC
+  3    MadEran                     17.382  1006.670 BTC   303.014 BTC
+  4    DomTheBoss                  17.102  2522.653 BTC  1022.827 BTC
+  5    Dareios_Tece                15.063  1259.393 BTC   598.698 BTC
+  6    GregTheGolem                11.442   534.957 BTC   150.712 BTC
+  7    Vio                         10.702   839.012 BTC   999.657 BTC
+  8    Hensky_D_Rockefeller        10.407  1557.252 BTC   367.339 BTC
+  9    Ur-Shak                      9.916  1423.028 BTC   647.015 BTC
+  10   Haxe                         9.861   699.956 BTC   311.285 BTC
+  11   PYT                          9.454    78.810 BTC    72.405 BTC
+  12   PerryDasGregtier             9.166     5.032 BTC     1.228 BTC
+  13   Hans_Sprungfeld              9.164  2004.584 BTC   757.945 BTC
+  14   PraiseTheToaster             8.851  4497.192 BTC   982.545 BTC
+  15   Mcalti                       8.575   973.098 BTC   126.238 BTC
+  16   Hokuspokus                   7.669  1682.465 BTC   451.369 BTC
+  17   Steuerzwerg                  7.447  1227.100 BTC   762.596 BTC
+  18   fafnirxyz                    7.077  1147.405 BTC   323.486 BTC
+  19   Robisch                      6.403   808.133 BTC   271.706 BTC
+  20   Gruselmonster                6.053  2229.299 BTC   607.289 BTC
+  21   Friedrich_Ali                5.648  1090.410 BTC   609.515 BTC
+  22   FCKNZS                       5.471  1521.457 BTC   716.227 BTC
+  23   Mettwurst                    5.436  1969.771 BTC   420.600 BTC
+  24   Qu1ckSilveR                  4.905  3848.310 BTC  2141.469 BTC
+  25   Meister_Proper               4.721    79.774 BTC     8.838 BTC
+
+══ Mitglieder: Nachrichtendienst (24, davon 2 unbekannt) ══
+
+  Rang  Username                 Weekly Dmg          Equip        Weapons
+  ───── ────────────────────── ──────────── ────────────── ──────────────
+  1    Smoil                      263.723  1056.240 BTC   191.729 BTC
+  2    Ariona87                   144.235  3005.197 BTC  1123.674 BTC
+  3    Adam                       111.962  1710.201 BTC   337.611 BTC
+  4    Hopfenkrieger               25.163   156.284 BTC    51.858 BTC
+  5    YanaK                       24.848  1687.452 BTC   765.773 BTC
+  6    Duffnab                     18.151  1224.458 BTC   388.545 BTC
+  7    Burr                        16.884  1298.454 BTC   310.205 BTC
+  8    Clara0005                   16.599  1815.988 BTC   433.297 BTC
+  9    Ecko                        15.282   570.633 BTC   230.016 BTC
+  10   Dr-Krieger                  14.759   973.693 BTC   520.975 BTC
+  11   simonscat                   13.431   325.586 BTC   132.456 BTC
+  12   Quidton                     13.186  1311.774 BTC   249.435 BTC
+  13   callforgot                  12.756   619.882 BTC   184.802 BTC
+  14   PlagueDoc                   12.630  1663.579 BTC   692.002 BTC
+  15   TrippleM                    12.136  1606.075 BTC   454.944 BTC
+  16   DerNamenlose                10.727   675.604 BTC   297.485 BTC
+  17   Creepi                       9.552     4.838 BTC     2.442 BTC
+  18   TimonsElsa                   9.523   803.986 BTC   152.430 BTC
+  19   Igz0rn                       8.097   485.096 BTC   279.871 BTC
+  20   Matze251                     5.258   169.885 BTC    61.945 BTC
+  21   Gintoki                      4.947   823.024 BTC    70.028 BTC
+  22   Shep063                          0   469.927 BTC   644.870 BTC
+
+  Unbekannte User (2):
+  Rang  User-ID                     
+  ───── ────────────────────────────
+  1     698699d45312557c1fa51ef6    
+  2     699c43627741635957618263    
+
+══ Mitglieder: Panzergrenadier (23, davon 0 unbekannt) ══
+
+  Rang  Username                 Weekly Dmg          Equip        Weapons
+  ───── ────────────────────── ──────────── ────────────── ──────────────
+  1    kbeez                      390.318   530.197 BTC   232.814 BTC
+  2    TimDoodle                   43.671  1269.993 BTC   322.144 BTC
+  3    StonePlaying                43.650  1783.382 BTC   467.246 BTC
+  4    Hasteman                    39.153  1087.657 BTC   199.797 BTC
+  5    Mattes                      32.918  1967.212 BTC   477.166 BTC
+  6    RosaWurm                    24.119   183.533 BTC    70.901 BTC
+  7    CptnOrly                    22.801   791.359 BTC   413.963 BTC
+  8    flx                         19.298  1747.432 BTC   336.086 BTC
+  9    S4LT                        15.781   768.624 BTC    83.349 BTC
+  10   Brunhilda_von_Quack         14.467  1904.142 BTC   952.923 BTC
+  11   faebsoehl                   13.599  1420.134 BTC   505.345 BTC
+  12   Polaros                     13.200  1918.527 BTC   801.333 BTC
+  13   Farrokh_Bulsara             11.925   847.516 BTC   396.041 BTC
+  14   Trooper420                  11.197  1080.762 BTC   393.091 BTC
+  15   RosaSchluepfer              10.855    27.930 BTC   667.174 BTC
+  16   Warrhino                    10.615  1520.399 BTC   556.854 BTC
+  17   Ausbilder_Schmidt            8.730  2175.730 BTC  1213.512 BTC
+  18   EuropeanBlack                8.715  1124.913 BTC   341.643 BTC
+  19   Dr-AlRabiato                 8.650   617.239 BTC   266.745 BTC
+  20   Grenzwertig                  8.521   882.435 BTC   886.727 BTC
+  21   Bonkhammer                   8.288   521.069 BTC   198.982 BTC
+  22   15RandomLetters              6.370    49.441 BTC    22.321 BTC
+  23   Nathalie                     5.521   673.026 BTC   614.975 BTC
+
+══ Mitglieder: Steuerfahndung (24, davon 0 unbekannt) ══
+
+  Rang  Username                 Weekly Dmg          Equip        Weapons
+  ───── ────────────────────── ──────────── ────────────── ──────────────
+  1    ReeaperLive                403.167  1555.562 BTC   225.226 BTC
+  2    Misanthrop                 106.748   616.941 BTC   141.188 BTC
+  3    HansKrampf                  52.265   446.168 BTC   166.311 BTC
+  4    Rosettenpolker_             35.494    64.064 BTC    30.291 BTC
+  5    Paszxy                      21.150    88.125 BTC    48.699 BTC
+  6    Nanon                       19.757   119.375 BTC   120.335 BTC
+  7    Zeitarbeiter                17.880   450.968 BTC   166.709 BTC
+  8    Falconflyer                 15.374  1424.114 BTC   490.928 BTC
+  9    Machine_Gun_Demon           14.785   118.440 BTC    62.346 BTC
+  10   PROVOCUNT                   13.419   739.153 BTC   181.241 BTC
+  11   DresdenKrieger              13.122    61.891 BTC   137.841 BTC
+  12   Oma_Gertrude                11.598   608.557 BTC   140.557 BTC
+  13   BavarianWarlord             10.020   444.109 BTC   190.777 BTC
+  14   fjab                         9.892    24.443 BTC     4.626 BTC
+  15   Jeffreeey                    7.910   119.175 BTC    35.762 BTC
+  16   Steel                        5.249   135.378 BTC    66.859 BTC
+  17   CorefighterGER               5.058    57.806 BTC    50.790 BTC
+  18   MajorCell                    4.726     0.000 BTC    26.580 BTC
+  19   Baum                         4.058   602.859 BTC   154.978 BTC
+  20   Ponderaso                    3.260   125.742 BTC    69.730 BTC
+  21   AtomicFox                    2.691    68.126 BTC    11.070 BTC
+  22   Nachtsoldat                      0   213.213 BTC    81.080 BTC
+  23   TheDude                          0     0.000 BTC     0.000 BTC
+  24   OpossumDasWiesel                 0    15.280 BTC     1.421 BTC
+
+══ Mitglieder: Mallorca (17, davon 0 unbekannt) ══
+
+  Rang  Username                 Weekly Dmg          Equip        Weapons
+  ───── ────────────────────── ──────────── ────────────── ──────────────
+  1    TMan                       200.927   546.135 BTC   152.292 BTC
+  2    HELAAG                      36.053   221.380 BTC    67.739 BTC
+  3    KillBillig                  33.372  2058.249 BTC   265.855 BTC
+  4    Ascani0                     14.732  1081.601 BTC   528.276 BTC
+  5    hans_wurst                  13.805   354.472 BTC   202.332 BTC
+  6    cHaOsStyle                  13.312   828.226 BTC   278.669 BTC
+  7    distel                      12.029   775.855 BTC   210.110 BTC
+  8    Senator_Dorsch              11.228   403.932 BTC    26.008 BTC
+  9    Balodil                     10.197   221.240 BTC   181.851 BTC
+  10   Detlef_D_SooSt               7.858   819.940 BTC   339.566 BTC
+  11   Maelesh                      6.289    55.273 BTC    18.233 BTC
+  12   Zerodyme                     4.588   195.087 BTC   302.114 BTC
+  13   Diogenes                     4.404   289.185 BTC    40.453 BTC
+  14   Fynn4cross                   3.831   203.386 BTC    56.422 BTC
+  15   LordCatGod                   3.437   391.052 BTC   493.546 BTC
+  16   admiralGustav                    0   306.793 BTC   141.478 BTC
+  17   firemango                        0  1140.282 BTC   426.970 BTC
+
+
+Legende:
+  Weekly Dmg       – Summe der wöchentlichen Schäden aller Mitglieder
+  Equip / Ø Equip – Gesamtwert / Schnitt Ausrüstung (BTC)
+  Weapons / Ø Weapons – Gesamtwert / Schnitt Waffen (BTC)

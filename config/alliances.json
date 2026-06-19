@@ -1,0 +1,34 @@
+{
+  "alliances": [
+    {
+      "name": "B.E.E.R",
+      "color": "#2563eb",
+      "members": ["Germany", "Sweden", "Finland", "Ireland", "United Kingdom", "Norway"]
+    },
+    {
+      "name": "ICPD",
+      "color": "#e00bbf",
+      "members": ["Germany", "Indonesia", "Portugal", "Romania", "Serbia", "Spain", "Brazil","Namibia", "Indonesia"]
+    },
+    {
+      "name": "Holy Alliance",
+      "color": "#cc0000",
+      "members": ["Poland", "Lithuania", "Latvia", "United States", "Estonia", "Belgium", "South Africa", "Turkiye", "Chile", "Colombia", "Hungary", "Israel", "Greenland", "Denmark", "Croatia", "Puerto Rico", "Tanzania", "Morocco", "Brunei", "Jamaica", "Greece", "Luxembourg", "Libya", "Azerbaijan", "Bahamas", "Netherlands", "France"]
+    },
+    {
+      "name": "Olivenöl Allianz",
+      "color": "#65880f",
+      "members": ["Egypt", "Iraq", "Libya", "Greece", "Hungary", "Italy", "Turkiye", "Palestine", "Croatia", "Bulgaria"]
+    },
+    {
+      "name": "Asian federations",
+      "color": "#10c7b8",
+      "members": ["China", "Taiwan", "Philippines", "Mongolia", "Laos", "Bhutan", "Brunei", "East Timor", "Egypt", "Fiji", "India", "Iraq", "Palestine", "South Korea", "United Korea", "Vietnam"]
+    },
+    {
+      "name": "Afrikanische Union",
+      "color": "#d4a017",
+      "members": ["Angola", "South Africa", "Nigeria", "Zambia", "Kenya", "Zimbabwe", "Botswana", "Ethiopia", "Sierra Leone", "Eswatini", "Tanzania", "Morocco", "Ghana", "Libya", "Congo", "DR Congo", "Cameroon", "Burundi", "Senegal", "Benin", "Egypt", "Mauritius", "South Sudan"]
+    }
+  ]
+}

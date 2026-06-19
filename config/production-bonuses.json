@@ -1,0 +1,25 @@
+{
+  "version": 1,
+  "description": "Produktions-Bonus-Regeln für Warera. Manuell anpassbar – alle Skripte lesen aus dieser Datei.",
+  "ethicSpecialisation": {
+    "industrial": {
+      "goods": ["lightAmmo", "heavyAmmo", "ammo", "steel", "concrete", "iron", "limestone", "lead", "petroleum", "oil", "wood", "paper"],
+      "bonusPerLevel": 15,
+      "maxLevel": 2,
+      "description": "Bonus auf Industriegüter, wenn ruling_party.ethics_industrialism > 0. +1 = 15%, +2 = 30%"
+    },
+    "agricultural": {
+      "goods": ["coca", "grain", "livestock", "fish"],
+      "bonusPerLevel": 15,
+      "maxLevel": 2,
+      "description": "Bonus auf Agrargüter, wenn ruling_party.ethics_industrialism < 0. -1 = 15%, -2 = 30%"
+    }
+  },
+  "deposit": {
+    "bonusPercent": 30,
+    "description": "Regionen mit aktivem Deposit geben 30% Bonus auf das Deposit-Gut"
+  },
+  "strategicResource": {
+    "description": "strategic_prod_bonus gilt nur für das specialized_item des kontrollierenden Landes"
+  }
+}

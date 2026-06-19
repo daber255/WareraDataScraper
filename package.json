@@ -1,0 +1,36 @@
+{
+  "name": "warera-data-scraper",
+  "version": "1.0.0",
+  "description": "Regelmäßiges Scrapen der Warera API – Daten für Analysen und Zeitverlaufs-Tracking",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean --dts",
+    "dev": "tsx src/index.ts",
+    "scrape": "tsx src/index.ts --once",
+    "scrape:full": "tsx src/index.ts --once --all",
+    "watch": "tsx src/index.ts",
+    "start": "node dist/index.js",
+    "report:production": "tsx scripts/production-report.ts",
+    "report:wages": "tsx scripts/break-even-wages.ts",
+    "report:divisions": "tsx scripts/division-report.ts",
+    "report:adav": "tsx scripts/adav-members.ts",
+    "report:dashboard": "tsx scripts/generate-dashboard.ts",
+    "export:pages": "tsx scripts/export-pages-data.ts",
+    "mcp": "tsx src/mcp-server.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.29.0",
+    "@wareraprojects/api": "^0.3.2",
+    "better-sqlite3": "^11.7.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.5",
+    "pm2": "^7.0.1",
+    "tsup": "^8.3.5",
+    "tsx": "^4.16.2",
+    "typescript": "^5.7.3"
+  }
+}

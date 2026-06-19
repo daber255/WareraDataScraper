@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "description": "Divisionen mit ihren Militäreinheiten (MUs). MU-Namen werden aus military_units.name aufgelöst.",
+  "divisions": [
+    {
+      "name": "Division3",
+      "mu_names": ["Marktmanipulation", "DeutscheMarine", "CannabisKommando", "Nachrichtendienst", "Panzergrenadier", "Steuerfahndung","Mallorca"]
+    },
+    {
+      "name": "Division1",
+      "mu_names": ["Heimatschutz", "Panzerpioniere", "Brigadeartillerie", "Kampfschwimmer", "Eisengrat", "Sternenflotte", "Minentaucher"]
+    }
+  ]
+}
