@@ -414,6 +414,20 @@ const USER_HISTORY_INDEX = `
 CREATE INDEX IF NOT EXISTS idx_user_history_id_fetched ON user_history(id, fetched_at);
 `;
 
+const EQUIPMENT_USAGE_TABLE = `
+CREATE TABLE IF NOT EXISTS equipment_usage (
+  id TEXT PRIMARY KEY,
+  code TEXT,
+  buyer TEXT,
+  seller TEXT,
+  transactiontype TEXT,
+  skills TEXT,
+  state INTEGER DEFAULT 0,
+  last_acquisition_at TEXT,
+  updated_at TEXT,
+  fetched_at TEXT NOT NULL
+);`;
+
 const WAR_TABLE = `
 CREATE TABLE IF NOT EXISTS wars (
   id TEXT PRIMARY KEY,
@@ -480,6 +494,7 @@ export const CREATE_TABLES = [
   ITEM_PRICES_TABLE,
   MILITARY_UNITS_TABLE,
   ALLIANCES_TABLE,
+  EQUIPMENT_USAGE_TABLE,
   WAR_TABLE,
   USER_HISTORY_TABLE,
   USER_HISTORY_INDEX,

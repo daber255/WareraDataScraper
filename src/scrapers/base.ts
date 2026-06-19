@@ -799,6 +799,40 @@ export function insertUserHistory(db: Database.Database, rawUsers: Record<string
   }
 }
 
+export function upsertEquipmentUsage(
+  db: Database.Database,
+  tx: Record<string, unknown>,
+) {
+  const item = tx.item as Record<string, unknown> | undefined;
+  const now = new Date().toISOString();
+  const stmt = db.prepare(`
+    INSERT INTO equipment_usage (id, code, buyer, seller, transactiontype, skills, state, last_acquisition_at, updated_at, fetched_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    ON CONFLICT(id) DO UPDATE SET
+      code = excluded.code,
+      buyer = excluded.buyer,
+      seller = excluded.seller,
+      transactiontype = excluded.transactiontype,
+      skills = excluded.skills,
+      state = excluded.state,
+      last_acquisition_at = excluded.last_acquisition_at,
+      updated_at = excluded.updated_at,
+      fetched_at = excluded.fetched_at
+  `);
+  stmt.run(
+    tx._id as string,
+    item?.code as string ?? null,
+    tx.buyerId as string ?? null,
+    tx.sellerId as string ?? null,
+    tx.transactionType as string ?? null,
+    item?.skills ? JSON.stringify(item.skills) : null,
+    (item?.state as number) ?? 0,
+    item?.lastAcquisitionAt as string ?? null,
+    tx.updatedAt as string ?? null,
+    now,
+  );
+}
+
 export function log(name: string, msg: string) {
   console.log(`[${name}] ${msg}`);
 }

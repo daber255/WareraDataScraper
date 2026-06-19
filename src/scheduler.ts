@@ -16,6 +16,7 @@ import { regionScraper } from './scrapers/region.js';
 import { miscScraper } from './scrapers/misc.js';
 import { allianceScraper } from './scrapers/alliance.js';
 import { warScraper } from './scrapers/war.js';
+import { equipmentUsageScraper } from './scrapers/equipmentUsage.js';
 import { getDb } from './db/connection.js';
 import { execSync } from 'node:child_process';
 
@@ -34,6 +35,7 @@ export const ALL_SCRAPERS: ScraperDefinition[] = [
   miscScraper,
   allianceScraper,
   warScraper,
+  equipmentUsageScraper,
 ];
 
 interface ScraperInstance {
