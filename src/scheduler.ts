@@ -130,13 +130,13 @@ export function startScheduler(cfg: Config) {
 
     if (inst.definition.scheduleHours?.length) {
       const now = new Date();
-      const currentHour = now.getHours();
+      const currentHour = now.getUTCHours();
       const hrs = inst.definition.scheduleHours.sort((a, b) => a - b);
 
       const next = hrs.find(h => h > currentHour) ?? hrs[0];
       const nextDate = new Date(now);
-      if (next <= currentHour) nextDate.setDate(nextDate.getDate() + 1);
-      nextDate.setHours(next, 0, 0, 0);
+      if (next <= currentHour) nextDate.setUTCDate(nextDate.getUTCDate() + 1);
+      nextDate.setUTCHours(next, 0, 0, 0);
 
       delay = Math.max(0, nextDate.getTime() - now.getTime());
     }
