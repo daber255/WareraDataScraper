@@ -62,15 +62,9 @@ function main() {
     process.exit(1);
   }
 
-  const placeholders = memberCountries.map(() => '?').join(',');
-  const countryNames = db.prepare(
-    `SELECT id, name FROM countries WHERE id IN (${placeholders})`,
-  ).all(...memberCountries) as { id: string; name: string }[];
-
-  const countryNameMap = new Map(countryNames.map(c => [c.id, c.name]));
   const memberSet = new Set(memberCountries);
-
   const cutoff = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
+  const placeholders = memberCountries.map(() => '?').join(',');
 
   const battles = db.prepare(`
     SELECT * FROM battles
@@ -84,6 +78,13 @@ function main() {
     console.log(`\n${ALLIANCE_NAME} – Keine Schlachten in den letzten 24h.\n`);
     return;
   }
+
+  const allCountryIds = [...new Set(battles.flatMap(b => [b.attacker_country, b.defender_country]))];
+  const countryPlaceholders = allCountryIds.map(() => '?').join(',');
+  const countryNames = db.prepare(
+    `SELECT id, name FROM countries WHERE id IN (${countryPlaceholders})`,
+  ).all(...allCountryIds) as { id: string; name: string }[];
+  const countryNameMap = new Map(countryNames.map(c => [c.id, c.name]));
 
   const out: string[] = [];
   const wl = (line = '') => { out.push(line); console.log(line); };

@@ -5,66 +5,66 @@
 
 ───────────────────────────────────────────────────────
   ⚔️ 6a3564e7b2fc  | 2026-06-19T15:48
-  6813b6d546e731854c7ac8d1 vs Iran
+  Azerbaijan vs Iran
   Runden: 1  (0:0)
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  6813b6d546e731854c7ac8d1:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
+  Azerbaijan:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
 
 ───────────────────────────────────────────────────────
   ⚔️ 6a34ec22ee32  | 2026-06-19T07:13
-  United Kingdom vs 6813b6d446e731854c7ac7a4
+  United Kingdom vs Belgium
   Runden: 2  (0:1)
 
 
   United Kingdom:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  6813b6d446e731854c7ac7a4:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
+  Belgium:   311.18 btc gesamt  (Verträge: 0.00 / Bounties: 311.18)
 
 ───────────────────────────────────────────────────────
   ⚔️ 6a34ebe4f827  | 2026-06-19T07:12
-  683ddd2c24b5a2e114af15c3 vs Iran
+  Iraq vs Iran
   Runden: 2  (1:0)
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  683ddd2c24b5a2e114af15c3:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
+  Iraq:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
 
 ───────────────────────────────────────────────────────
   ⚔️ 6a34dca5f6c0  | 2026-06-19T06:07
-  Iran vs 6813b6d446e731854c7ac7eb
+  Iran vs Turkiye
   Runden: 2  (1:0)
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  6813b6d446e731854c7ac7eb:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
+  Turkiye:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
 
 ───────────────────────────────────────────────────────
   ❌ 6a34c1d89a67  | 2026-06-19T04:13
-  6813b6d446e731854c7ac7a4 vs Portugal
+  Belgium vs Portugal
   Runden: 2  (2:0)
 
 
   Portugal:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  6813b6d446e731854c7ac7a4:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
+  Belgium:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
 
 ───────────────────────────────────────────────────────
   ❌ 6a34b55cd852  | 2026-06-19T03:19
-  6813b6d546e731854c7ac8d1 vs Iran
+  Azerbaijan vs Iran
   Runden: 2  (2:0)
 
 
   Iran:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  6813b6d546e731854c7ac8d1:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
+  Azerbaijan:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
 
 ───────────────────────────────────────────────────────
   ✅ 6a34b0ba335e  | 2026-06-19T03:00
-  Ireland vs 6813b6d446e731854c7ac7a4
+  Ireland vs Belgium
   Runden: 2  (2:0)
 
 
   Ireland:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
-  6813b6d446e731854c7ac7a4:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
+  Belgium:     0.00 btc gesamt  (Verträge: 0.00 / Bounties: 0.00)
 
 
 ═══════════════════════════════════════════════════════
@@ -74,6 +74,6 @@
                          Verträge   Bounties     Gesamt
   ──────────────────────────────────────────────────
   Attacker                   0.00       0.00       0.00
-  Defender                   0.00       0.00       0.00
+  Defender                   0.00     311.18     311.18
   ──────────────────────────────────────────────────
-  Gesamt                     0.00       0.00       0.00
+  Gesamt                     0.00     311.18     311.18
