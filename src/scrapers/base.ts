@@ -339,7 +339,7 @@ export function upsertBattle(db: Database.Database, battle: Record<string, unkno
       attacker_won_rounds = excluded.attacker_won_rounds,
       attacker_damages = excluded.attacker_damages,
       attacker_hit_count = excluded.attacker_hit_count,
-      attacker_money_pool = excluded.attacker_money_pool,
+      attacker_money_pool = CASE WHEN excluded.attacker_money_pool IS NOT NULL AND excluded.attacker_money_pool > 0 THEN excluded.attacker_money_pool ELSE attacker_money_pool END,
       attacker_money_per_1k_damages = excluded.attacker_money_per_1k_damages,
       attacker_bounty_effective_at = excluded.attacker_bounty_effective_at,
       defender_country = excluded.defender_country,
@@ -347,7 +347,7 @@ export function upsertBattle(db: Database.Database, battle: Record<string, unkno
       defender_won_rounds = excluded.defender_won_rounds,
       defender_damages = excluded.defender_damages,
       defender_hit_count = excluded.defender_hit_count,
-      defender_money_pool = excluded.defender_money_pool,
+      defender_money_pool = CASE WHEN excluded.defender_money_pool IS NOT NULL AND excluded.defender_money_pool > 0 THEN excluded.defender_money_pool ELSE defender_money_pool END,
       defender_money_per_1k_damages = excluded.defender_money_per_1k_damages,
       defender_bounty_effective_at = excluded.defender_bounty_effective_at
   `);

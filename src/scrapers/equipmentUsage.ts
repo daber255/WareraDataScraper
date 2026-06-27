@@ -20,6 +20,7 @@ export const equipmentUsageScraper: ScraperDefinition = {
       const options: Record<string, unknown> = {
         limit: 100,
         autoPaginate: true,
+        transactionType: 'dismantleItem',
       };
 
       if (isFirstRun) {
@@ -44,6 +45,10 @@ export const equipmentUsageScraper: ScraperDefinition = {
           }
         }
       }
+
+      // Cleanup: delete equipment_usage older than 7 days
+      const del = db.prepare(`DELETE FROM equipment_usage WHERE updated_at < datetime('now', '-7 days')`).run();
+      if (del.changes > 0) log('equipmentUsage', `cleaned up ${del.changes} old records`);
 
       log('equipmentUsage', `done – ${count} used equipment items${isFirstRun ? '' : ' (delta)'} (${pageNum} pages, ${elapsed(t0)})`);
       completeScrapeRun(db, runId, count);

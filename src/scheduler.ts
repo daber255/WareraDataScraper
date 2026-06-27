@@ -1,5 +1,5 @@
 import { createAPIClient, type APIClient } from '@wareraprojects/api';
-import type Database from 'better-sqlite3';
+import Database from 'better-sqlite3';
 import type { Config } from './config.js';
 import type { ScraperDefinition } from './scrapers/base.js';
 import { countryScraper } from './scrapers/country.js';
@@ -17,7 +17,7 @@ import { miscScraper } from './scrapers/misc.js';
 import { allianceScraper } from './scrapers/alliance.js';
 import { warScraper } from './scrapers/war.js';
 import { equipmentUsageScraper } from './scrapers/equipmentUsage.js';
-import { getDb } from './db/connection.js';
+import { getDb, closeDb } from './db/connection.js';
 import { execSync } from 'node:child_process';
 
 export const ALL_SCRAPERS: ScraperDefinition[] = [
@@ -44,9 +44,20 @@ interface ScraperInstance {
   timer: ReturnType<typeof setTimeout> | null;
 }
 
+function createClients(cfg: Config): APIClient[] {
+  return cfg.apiKeys.map(key => createAPIClient({ apiKey: key, rateLimit: 500 }));
+}
+
+let clientIndex = 0;
+function nextClient(clients: APIClient[]): APIClient {
+  const client = clients[clientIndex % clients.length];
+  clientIndex++;
+  return client;
+}
+
 export async function runOnce(cfg: Config, all?: boolean) {
   const db = getDb(cfg);
-  const client = createAPIClient({ apiKey: cfg.apiKey });
+  const clients = createClients(cfg);
 
   const scrapers = all ? ALL_SCRAPERS : [
     eventScraper,
@@ -58,7 +69,7 @@ export async function runOnce(cfg: Config, all?: boolean) {
     const label = `[${scraper.name}]`;
     console.log(`${label} starting...`);
     try {
-      await scraper.execute(client, db);
+      await scraper.execute(nextClient(clients), db);
       console.log(`${label} done`);
     } catch (err) {
       console.error(`${label} failed:`, err);
@@ -80,6 +91,8 @@ export async function runAll(cfg: Config, client: APIClient, db: Database.Databa
 }
 
 function exportAndDeploy(cfg: Config) {
+  if (!cfg.gitHubToken) return; // Pi ohne Token → kein Deploy
+
   try {
     console.log('[deploy] Exporting pages data...');
     execSync('npm run export:pages 2>&1', { stdio: 'inherit', cwd: cfg.projectRoot });
@@ -97,12 +110,33 @@ function exportAndDeploy(cfg: Config) {
   }
 }
 
+async function generateBeerWarPng(cfg: Config) {
+  try {
+    console.log('[png] Generating B.E.E.R War Update PNG...');
+    execSync('npm run report:beer-png 2>&1', { stdio: 'inherit', cwd: cfg.projectRoot });
+    console.log('[png] Done');
+  } catch (err) {
+    console.error('[png] failed:', err);
+  }
+}
+
+function checkIntegrity(cfg: Config) {
+  for (const [label, p] of [['main', cfg.dbPath] as const, ['snapshots', cfg.snapshotsDbPath] as const]) {
+    try {
+      const d = new Database(p, { readonly: true });
+      const r = d.prepare('PRAGMA integrity_check').get() as Record<string, string>;
+      const ok = r && Object.values(r)[0] === 'ok';
+      console.log(`[integrity] ${label} (${p}): ${ok ? 'OK' : 'CORRUPT: ' + JSON.stringify(r)}`);
+      d.close();
+    } catch (err) {
+      console.error(`[integrity] ${label} check failed:`, err);
+    }
+  }
+}
+
 export function startScheduler(cfg: Config) {
   const db = getDb(cfg);
-  const client = createAPIClient({
-    apiKey: cfg.apiKey,
-    rateLimit: 500,
-  });
+  const clients = createClients(cfg);
 
   const instances: ScraperInstance[] = ALL_SCRAPERS.map(definition => ({
     definition,
@@ -111,6 +145,7 @@ export function startScheduler(cfg: Config) {
   }));
 
   async function runScraper(inst: ScraperInstance) {
+    const client = nextClient(clients);
     const label = `[${inst.definition.name}]`;
     console.log(`${label} starting...`);
     try {
@@ -119,6 +154,10 @@ export function startScheduler(cfg: Config) {
 
       if (inst.definition.name === 'user') {
         exportAndDeploy(cfg);
+        const h = new Date().getUTCHours();
+        if (h >= 0 && h <= 2) {
+          await generateBeerWarPng(cfg);
+        }
       }
     } catch (err) {
       console.error(`${label} failed:`, err);
@@ -146,16 +185,17 @@ export function startScheduler(cfg: Config) {
     inst.timer = setTimeout(() => runScraper(inst), delay);
   }
 
-  // Initial full scrape
-  console.log('Initial full scrape starting...');
-  runAll(cfg, client, db).then(() => {
-    console.log('Initial full scrape complete. Starting scheduler...');
-    // Run export after initial scrape too
-    exportAndDeploy(cfg);
-    for (const inst of instances) {
-      scheduleNext(inst);
-    }
-  });
+  // Initial integrity check at startup
+  checkIntegrity(cfg);
+
+  // Schedule daily integrity check (every 24h)
+  const integrityInterval = setInterval(() => checkIntegrity(cfg), 24 * 60 * 60 * 1000);
+
+  // Start scheduler immediately (no full scrape)
+  console.log('Starting scheduler...');
+  for (const inst of instances) {
+    scheduleNext(inst);
+  }
 
   // Graceful shutdown
   function shutdown() {
@@ -163,7 +203,9 @@ export function startScheduler(cfg: Config) {
     for (const inst of instances) {
       if (inst.timer) clearTimeout(inst.timer);
     }
-    process.exit(0);
+    clearInterval(integrityInterval);
+    closeDb();
+    setTimeout(() => process.exit(0), 5000);
   }
   process.on('SIGINT', shutdown);
   process.on('SIGTERM', shutdown);

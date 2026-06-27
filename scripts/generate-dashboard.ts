@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import Database from 'better-sqlite3';
 import path from 'node:path';
 import fs from 'node:fs';
@@ -272,7 +273,7 @@ function loadWealthData(db: Database.Database) {
             wealth_equipments, wealth_weapons, wealth_items, wealth_money, wealth_companies
      FROM user_history
      WHERE fetched_at >= datetime('now', '-30 days')
-     ORDER BY id, fetched_at`
+     ORDER BY fetched_at`
   ).all() as Record<string, unknown>[];
 
   const rawUserHist = new Map<string, unknown[]>();
@@ -404,37 +405,29 @@ function loadWealthData(db: Database.Database) {
     });
   }
 
-  // ── MU history (aggregated daily) ──
-  const BATCH = 100;
+  // ── MU history (aggregated daily, in-memory from rawUserHist) ──
   for (const [muId, memberIds] of muMembership) {
     const tsMap = new Map<string, { total: number; eq: number; wp: number; it: number; mo: number; co: number; cnt: number }>();
-    for (let i = 0; i < memberIds.length; i += BATCH) {
-      const batch = memberIds.slice(i, i + BATCH);
-      const placeholders = batch.map(() => '?').join(',');
-      const rows = db.prepare(
-        `SELECT fetched_at, wealth,
-                wealth_equipments, wealth_weapons, wealth_items, wealth_money, wealth_companies
-         FROM user_history
-         WHERE id IN (${placeholders})
-           AND fetched_at >= datetime('now', '-30 days')`
-      ).all(...batch) as Record<string, unknown>[];
-      for (const row of rows) {
-        const ts = row.fetched_at as string;
+    for (const uid of memberIds) {
+      const entries = rawUserHist.get('user_' + uid);
+      if (!entries) continue;
+      for (const row of entries as any[]) {
+        const ts = row.t;
         let e = tsMap.get(ts);
         if (!e) { e = { total: 0, eq: 0, wp: 0, it: 0, mo: 0, co: 0, cnt: 0 }; tsMap.set(ts, e); }
-        e.total += (row.wealth as number);
-        e.eq += (row.wealth_equipments as number) ?? 0;
-        e.wp += (row.wealth_weapons as number) ?? 0;
-        e.it += (row.wealth_items as number) ?? 0;
-        e.mo += (row.wealth_money as number) ?? 0;
-        e.co += (row.wealth_companies as number) ?? 0;
+        e.total += row.total;
+        e.eq += row.equipments;
+        e.wp += row.weapons;
+        e.it += row.items;
+        e.mo += row.money;
+        e.co += row.companies;
         e.cnt++;
       }
     }
     if (tsMap.size === 0) continue;
     const raw = [...tsMap.entries()]
       .map(([ts, d]) => ({
-        t: ts.slice(0, 16), total: d.total, avg: d.total / d.cnt,
+        t: ts, total: d.total, avg: d.total / d.cnt,
         members: d.cnt, equipments: d.eq, weapons: d.wp,
         items: d.it, money: d.mo, companies: d.co,
       }))
@@ -477,38 +470,31 @@ function loadWealthData(db: Database.Database) {
     });
   }
 
-  // ── Party history (aggregated daily) ──
+  // ── Party history (aggregated daily, in-memory from rawUserHist) ──
   for (const party of parties) {
     const ids = parseMemberIds(party.members);
     if (ids.length === 0) continue;
     const tsMap = new Map<string, { total: number; eq: number; wp: number; it: number; mo: number; co: number; cnt: number }>();
-    for (let i = 0; i < ids.length; i += BATCH) {
-      const batch = ids.slice(i, i + BATCH);
-      const placeholders = batch.map(() => '?').join(',');
-      const rows = db.prepare(
-        `SELECT fetched_at, wealth,
-                wealth_equipments, wealth_weapons, wealth_items, wealth_money, wealth_companies
-         FROM user_history
-         WHERE id IN (${placeholders})
-           AND fetched_at >= datetime('now', '-30 days')`
-      ).all(...batch) as Record<string, unknown>[];
-      for (const row of rows) {
-        const ts = row.fetched_at as string;
+    for (const uid of ids) {
+      const entries = rawUserHist.get('user_' + uid);
+      if (!entries) continue;
+      for (const row of entries as any[]) {
+        const ts = row.t;
         let e = tsMap.get(ts);
         if (!e) { e = { total: 0, eq: 0, wp: 0, it: 0, mo: 0, co: 0, cnt: 0 }; tsMap.set(ts, e); }
-        e.total += (row.wealth as number);
-        e.eq += (row.wealth_equipments as number) ?? 0;
-        e.wp += (row.wealth_weapons as number) ?? 0;
-        e.it += (row.wealth_items as number) ?? 0;
-        e.mo += (row.wealth_money as number) ?? 0;
-        e.co += (row.wealth_companies as number) ?? 0;
+        e.total += row.total;
+        e.eq += row.equipments;
+        e.wp += row.weapons;
+        e.it += row.items;
+        e.mo += row.money;
+        e.co += row.companies;
         e.cnt++;
       }
     }
     if (tsMap.size === 0) continue;
     const raw = [...tsMap.entries()]
       .map(([ts, d]) => ({
-        t: ts.slice(0, 16), total: d.total, avg: d.total / d.cnt,
+        t: ts, total: d.total, avg: d.total / d.cnt,
         members: d.cnt, equipments: d.eq, weapons: d.wp,
         items: d.it, money: d.mo, companies: d.co,
       }))
@@ -1128,18 +1114,18 @@ function renderWealthResults() {
     html += '<td>' + esc(r.name) + '</td>';
     html += '<td>' + esc(sub) + '</td>';
     html += '<td>' + r.memberCount + '</td>';
-    html += '<td class="btc">' + (r.totalWealth || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.avgWealth || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.equipments || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.avgEquipments || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.weapons || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.avgWeapons || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.items || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.avgItems || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.money || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.avgMoney || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.companies || 0).toFixed(2) + '</td>';
-    html += '<td class="btc">' + (r.avgCompanies || 0).toFixed(2) + '</td>';
+    html += '<td class="btc">' + fmt(r.totalWealth || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.avgWealth || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.equipments || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.avgEquipments || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.weapons || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.avgWeapons || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.items || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.avgItems || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.money || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.avgMoney || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.companies || 0, 2, true) + '</td>';
+    html += '<td class="btc">' + fmt(r.avgCompanies || 0, 2, true) + '</td>';
     html += '</tr>';
   }
   if (results.length === 0) {
@@ -1216,7 +1202,7 @@ function renderWealthChart(key, entity) {
             borderWidth: 1,
             callbacks: {
               label: function(ctx) {
-                return ctx.dataset.label + ': ' + fmt(ctx.parsed.y, 2) + ' BTC';
+                return ctx.dataset.label + ': ' + fmt(ctx.parsed.y, 2, true) + ' BTC';
               }
             }
           }
@@ -1369,7 +1355,10 @@ function getCCMode() {
   return document.getElementById('ccModeAvg').style.background === 'rgb(28, 33, 40)' ? 'avg' : 'total';
 }
 
-function fmt(n, decimals) {
+function fmt(n, decimals, abbreviate) {
+  if (abbreviate && Math.abs(n) >= 1000000) {
+    return (n / 1000000).toFixed(1).replace('.', ',') + ' M';
+  }
   return new Intl.NumberFormat('de-DE', { minimumFractionDigits: decimals, maximumFractionDigits: decimals }).format(n);
 }
 
@@ -1394,7 +1383,7 @@ function getLatestWealthStr(id, mode) {
   var last = hist[hist.length - 1];
   var liquid = (last.equipments || 0) + (last.weapons || 0) + (last.money || 0) + (last.items || 0);
   var val = mode === 'total' ? liquid : liquid / (last.members || 1);
-  return (isFinite(val)) ? fmt(val, 1) + ' BTC' : null;
+  return (isFinite(val)) ? fmt(val, 1, true) + ' BTC' : null;
 }
 
 function refreshCountryWealthLabels() {
@@ -1419,7 +1408,7 @@ function refreshCountryWealthLabels() {
           total += (last.equipments || 0) + (last.weapons || 0) + (last.money || 0) + (last.items || 0);
         }
       });
-      sel.options[sel.selectedIndex].text = alliance.name + ' (' + alliance.memberCountries.length + ' Länder) — ' + fmt(total, 1) + ' BTC';
+      sel.options[sel.selectedIndex].text = alliance.name + ' (' + alliance.memberCountries.length + ' Länder) — ' + fmt(total, 1, true) + ' BTC';
     }
   }
 }
@@ -1500,7 +1489,7 @@ function updateCountryCharts() {
             borderWidth: 1,
             callbacks: {
               label: function(ctx) {
-                return ctx.dataset.label + ': ' + fmt(ctx.parsed.y, 2) + ' BTC';
+                return ctx.dataset.label + ': ' + fmt(ctx.parsed.y, 2, true) + ' BTC';
               }
             }
           }

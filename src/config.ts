@@ -11,22 +11,26 @@ export function loadConfig() {
     process.exit(1);
   }
 
-  const gitHubToken = process.env.GITHUB_TOKEN;
-  if (!gitHubToken) {
-    console.error('GITHUB_TOKEN is required in .env');
-    process.exit(1);
-  }
+  const apiKeys = [
+    apiKey,
+    ...['_2', '_3', '_4']
+      .map(suffix => process.env[`WARERA_API_KEY${suffix}`])
+      .filter((k): k is string => !!k),
+  ];
 
   const projectRoot = path.resolve(__dirname, '..');
   const dataDir = path.resolve(process.env.SCRAPER_DATA_DIR || path.join(projectRoot, 'data'));
   const dbPath = path.join(dataDir, 'warera.db');
+  const snapshotsDbPath = path.join(dataDir, 'warera-snapshots.db');
 
   return {
     apiKey,
-    gitHubToken,
+    apiKeys,
+    gitHubToken: process.env.GITHUB_TOKEN,
     projectRoot,
     dataDir,
     dbPath,
+    snapshotsDbPath,
 
     intervals: {
       FAST: 5 * 60 * 1000,

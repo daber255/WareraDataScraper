@@ -503,8 +503,6 @@ CREATE INDEX IF NOT EXISTS idx_country_history_id_fetched ON country_history(id,
 `;
 
 export const CREATE_TABLES = [
-  SNAPSHOTS_TABLE,
-  ...SNAPSHOTS_INDEXES,
   SCRAPE_RUNS_TABLE,
   COUNTRIES_TABLE,
   USERS_TABLE,

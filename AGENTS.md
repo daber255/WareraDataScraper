@@ -11,20 +11,62 @@ Periodisch die Warera API abfragen, Daten in SQLite speichern und so Änderungen
 - **Dev:** `tsx` – TypeScript direkt ausführen
 - **Prozess-Manager:** `pm2` (lokal installiert)
 
+## Architektur
+
+```
+┌─────────────────────────────────────────────────┐
+│  Raspberry Pi (immer online)                    │
+│  ├── PM2 → warera-scraper                       │
+│  ├── schreibt DB: /srv/warera-data/warera.db    │
+│  └── exportiert NFS-Share                       │
+│        │                                        │
+│        ▼ (NFS, read-only / write für Reports)   │
+│  Dieser PC (NVMe-SSD)                           │
+│  ├── mountet NFS: /mnt/warera-data/warera.db    │
+│  ├── Reports (PPTX, Dashboard, Pages-Export)    │
+│  ├── kein PM2-Scraper                           │
+│  └── GitHub Pages Deploy                        │
+└─────────────────────────────────────────────────┘
+```
+
+**Rollenverteilung:**
+| Gerät | Aufgabe | Zugriff auf DB |
+|-------|---------|---------------|
+| **Raspberry Pi** (`raspberrymain.fritz.box`, 192.168.178.42) | Scraper (PM2), API-Calls, DB-Schreiben | Read+Write (lokal auf SD-Karte) |
+| **Dieser PC** | Reports, Dashboard, GitHub Pages | Read-only via NFS |
+
+Die Scraper laufen per PM2 auf dem Pi, dieser PC greift über NFS auf die DB zu und erstellt darauf basierend Reports (PPTX, Dashboard, Pages-Export). Der Deploy zu GitHub Pages erfolgt von diesem PC.
+
 ## Setup
 
+### Raspberry Pi
 ```bash
-npm install
+# PM2 start (source nvm before)
+source /home/pi/.nvm/nvm.sh && nvm use 22
+cd /home/pi/WareraDataScraper
+pm2 start /home/pi/start-warera-scraper.sh --name warera-scraper
+pm2 save
 ```
 
-`.env` anlegen (bereits vorhanden):
-
+`.env` auf dem Pi (`/home/pi/WareraDataScraper/.env`):
 ```env
 WARERA_API_KEY=wae_6497d6c62c9723db5a72baeb34e5cfc81f9b9887c425f4a41b064eb9b1aef96c
-SCRAPER_DATA_DIR=./data
+SCRAPER_DATA_DIR=/srv/warera-data
+```
+Kein GITHUB_TOKEN – der Deploy läuft nur vom PC.
+
+### Dieser PC
+`.env` (im Projektverzeichnis):
+```env
+WARERA_API_KEY=wae_6497d6c62c9723db5a72baeb34e5cfc81f9b9887c425f4a41b064eb9b1aef96c
+SCRAPER_DATA_DIR=/mnt/warera-data     # NFS-Mount vom Pi
+GITHUB_TOKEN=github_pat_...
 ```
 
-Das API Rate Limit beträgt **500 Requests pro Minute**. API-Calls werden in Batches von 50 parallel ausgeführt, um das Limit optimal auszunutzen.
+NFS-Mount (im `/etc/fstab` oder manuell):
+```bash
+sudo mount -t nfs4 raspberrymain.fritz.box:/srv/warera-data /mnt/warera-data
+```
 
 ## Projektstruktur
 
@@ -60,6 +102,8 @@ scripts/
 
 ## Datenbank-Schema
 
+Die Datenbank liegt in einer Datei (`warera.db`, ~1,9 GB). Alle Tabellen – normalisierte und Snapshots – sind in der gleichen Datei.
+
 ### `snapshots`
 Jeder API-Call wird als JSON-Schnappschuss gespeichert. Grundlage für zeitbasierte Analysen.
 
@@ -68,6 +112,11 @@ snapshots (id, endpoint, entity_id, data, fetched_at, metadata)
 ```
 
 Indizes auf `endpoint`, `entity_id`, `fetched_at` sowie Composite-Index `(endpoint, fetched_at)`.
+
+**Zugriff:**
+```sql
+SELECT * FROM snapshots WHERE endpoint = '...' LIMIT 5;
+```
 
 ### Normalisierte Tabellen (alle ohne `data`-JSON-Spalte – Felder flach ausgelegt)
 
@@ -100,26 +149,43 @@ Protokolliert jeden Scrape-Durchlauf (Start, Ende, Status, Items, Fehler).
 | `npm run watch` | Wie `dev` |
 | `npm run build` | Build mit tsup |
 | `npm start` | Build-Ausführung (dist/index.js) |
+| `npm run report:dashboard` | Dashboard lokal generieren (via NFS – langsam bei >8 GB DB) |
+| `npm run report:dashboard:remote` | Dashboard auf dem Pi generieren und per rsync zurückkopieren |
+
+## Dashboard-Generierung
+
+Auf diesem PC wird die 8,6 GB große SQLite-DB per NFS gemountet. Scans über `user_history` (334k Zeilen)
+sind über NFS extrem langsam (>5 min pro Query). Daher wird das Dashboard **auf dem Pi** generiert:
+
+```bash
+npm run report:dashboard:remote
+```
+
+Der Remote-Befehl:
+1. Stoppt PM2 auf dem Pi (verhindert WAL-Konflikte)
+2. Führt `generate-dashboard.ts` auf dem Pi aus (lokaler SD-Karten-Zugriff, ~2 min)
+3. Kopiert die generierten `docs/`-Dateien per rsync zurück
+4. Startet PM2 wieder
+
+**Hinweis:** Die DB muss auf dem Pi in einem konsistenten Zustand sein. Bei `busy`-Fehlern im WAL-Checkpoint
+müssen ggf. Prozesse auf diesem PC getötet werden, die die DB offen halten (`lsof /mnt/warera-data/warera.db`).
 
 ## PM2 (Hintergrundbetrieb + Autostart)
 
-Der Scraper läuft über PM2:
+Der Scraper läuft per PM2 auf dem Raspberry Pi:
 
 ```bash
-npx pm2 start npm --name "warera-scraper" -- run dev   # Starten
-npx pm2 status                                           # Status prüfen
-npx pm2 logs warera-scraper                              # Logs ansehen
-npx pm2 stop warera-scraper                              # Stoppen
-npx pm2 restart warera-scraper                           # Neustarten
+# Per SSH auf dem Pi
+source /home/pi/.nvm/nvm.sh && nvm use 22
+pm2 status                                            # Status prüfen
+pm2 logs warera-scraper                               # Logs ansehen
+pm2 stop warera-scraper                               # Stoppen
+pm2 restart warera-scraper                            # Neustarten
 ```
 
-**Autostart bei Reboot:** Per `@reboot`-Cron-Eintrag:
+**Autostart bei Reboot:** Systemd-Service (via `pm2 startup`), startet automatisch per `pm2 resurrect`.
 
-```cron
-@reboot cd /home/dario/Documents/WareraDataScraper && /home/dario/Documents/WareraDataScraper/node_modules/.bin/pm2 resurrect
-```
-
-Logs: `~/.pm2/logs/warera-scraper-*.log`
+Logs: `/home/pi/.pm2/logs/warera-scraper-*.log`
 
 ## Scraping-Intervalle
 
@@ -196,7 +262,30 @@ Besonderheiten:
 - `transaction.getPaginatedTransactions` – Transaktionen (paginated)
 
 ### Nicht aktiv gescrapt (obwohl API vorhanden)
-`round.getById`, `round.getLastHits`, `battleOrder.getByBattle`, `tradingOrder.getTopOrders`, `workOffer.*`, `upgrade.getUpgradeByTypeAndEntity`, `search.searchAnything`, `inventory.fetchCurrentEquipment`, `mercenaryContractAuction.*`, `battleLootSummary.*`, `election.*`, `tournament.*`
+`round.getById`, `round.getLastHits`, `battleOrder.getByBattle`, `tradingOrder.getTopOrders`, `workOffer.*`, `upgrade.getUpgradeByTypeAndEntity`, `search.searchAnything`, `inventory.fetchCurrentEquipment`, `battleLootSummary.*`, `election.*`, `tournament.*`
+
+## API-Dokumentation
+
+- **Community-Doku (empfohlen):** <https://github.com/zertw1/warera-bot/blob/main/API_documentation.md>
+- **OpenAPI JSON (offiziell):** <https://api2.warera.io/openapi.json>
+
+Wichtige Parameter für `battleRanking.getRanking`:
+| Parameter | Typ | Beschreibung |
+|-----------|-----|-------------|
+| `battleId` | string (optional) | Battle-ID |
+| `dataType` | string (required) | `damage`, `points`, oder `money` |
+| `type` | string (required) | `user`, `country`, oder `mu` |
+| `side` | string (required) | `attacker`, `defender`, oder `merged` |
+| `limit` | number (optional, max 100) | Einträge pro Seite (Default 20) |
+| `cursor` | string (optional) | Pagination-Cursor |
+
+Wichtige Parameter für `mercenaryContractAuction.getPaginatedAuctions`:
+| Parameter | Typ | Beschreibung |
+|-----------|-----|-------------|
+| `battleId` | string (optional) | Battle-ID |
+| `countryId` | string (optional) | Country-ID |
+| `status` | string (optional) | `active`, `won`, `expiredNoBids`, `expiredBattle`, `expiredRound`, `cancelled` |
+| `limit` | number (optional, max 50) | Einträge pro Seite |
 
 ## Daten auswerten
 
@@ -289,6 +378,10 @@ Bei Änderungen an normalisierten Tabellen (neue Spalten, Umbau) als Skript in `
 - **Donations/Parties** erfordern `countryId`-Filter – Iteration über alle Länder
 - **Item Prices** column-per-item (ein Row pro Scrape) statt row-per-item
 - **Zeitstempel** sind immer UTC (`new Date().toISOString()`)
+- **Snapshots in separater DB** (`warera-snapshots.db`) per `ATTACH DATABASE` – Korruption dort gefährdet nie die Normaldaten
+- **Integritäts-Check** beim Scheduler-Start und täglich via `PRAGMA integrity_check` auf beiden DBs – Logging als `[integrity]`
+- **`money_pool` schützen:** `upsertBattle` überschreibt `money_pool` nicht mit 0 (passiert wenn `getById` nach Ende der Battle den bereits ausgezahlten Pool als 0 meldet). Letzter bekannter Wert bleibt erhalten.
+- **Kostenberechnung ohne Rankings:** Fehlen Ranking-Snapshots, werden alle 'won'-Verträge als erfüllt gezählt. Bounties fallen dann auf den `money_pool` zurück (oder 0 wenn keiner vorhanden).
 
 ## MCP-Server
 

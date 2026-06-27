@@ -12,12 +12,16 @@
     "watch": "tsx src/index.ts",
     "start": "node dist/index.js",
     "report:production": "tsx scripts/production-report.ts",
+    "report:production-tax": "tsx scripts/production-tax-report.ts",
     "report:wages": "tsx scripts/break-even-wages.ts",
     "report:divisions": "tsx scripts/division-report.ts",
     "report:adav": "tsx scripts/adav-members.ts",
     "report:dashboard": "tsx scripts/generate-dashboard.ts",
+    "report:dashboard:remote": "bash scripts/generate-dashboard-remote.sh",
     "report:beer": "tsx scripts/beer-battle-report.ts",
     "report:damage": "tsx scripts/daily-damage-report.ts",
+    "report:beer-pptx": "tsx scripts/beer-war-pptx.ts",
+    "report:beer-png": "tsx scripts/beer-war-png.ts",
     "export:pages": "tsx scripts/export-pages-data.ts",
     "mcp": "tsx src/mcp-server.ts"
   },
@@ -25,7 +29,9 @@
     "@modelcontextprotocol/sdk": "^1.29.0",
     "@wareraprojects/api": "^0.3.2",
     "better-sqlite3": "^11.7.0",
-    "dotenv": "^16.4.5"
+    "dotenv": "^16.4.5",
+    "pptxgenjs": "^4.0.1",
+    "sharp": "^0.35.2"
   },
   "devDependencies": {
     "@types/better-sqlite3": "^7.6.12",

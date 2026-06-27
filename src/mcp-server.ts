@@ -16,7 +16,13 @@ const cfg = loadConfig();
 const db = new Database(cfg.dbPath);
 db.pragma('journal_mode = WAL');
 
-const apiClient = createAPIClient({ apiKey: cfg.apiKey, rateLimit: 500 });
+const apiClients = cfg.apiKeys.map(key => createAPIClient({ apiKey: key, rateLimit: 500 }));
+let clientIndex = 0;
+function nextClient() {
+  const client = apiClients[clientIndex % apiClients.length];
+  clientIndex++;
+  return client;
+}
 
 function isReadOnlyQuery(sql: string): boolean {
   const trimmed = sql.trimStart();
@@ -277,7 +283,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         if (!def) {
           return { content: [{ type: 'text', text: `Unknown scraper: ${scraperName}` }], isError: true };
         }
-        await def.execute(apiClient, db);
+        await def.execute(nextClient(), db);
         return { content: [{ type: 'text', text: `Scraper "${scraperName}" completed successfully` }] };
       }
 
